@@ -1,0 +1,41 @@
+-- Question 2
+SELECT COUNT(product_id)
+FROM sales;
+-- Note that because each sales transaction contains a product_id, there is no NULL value. So COUNT(*) will also work.
+
+-- Question 3
+SELECT c.state, SUM(s.sales_amount)::DECIMAL(12,2)
+FROM sales s
+JOIN customers c
+ON s.customer_id = c.customer_id
+GROUP BY c.state
+ORDER BY 1;
+
+-- Question 4
+-- We use a LIMIT 5 together with a ORDER BY DESC here to generate the top 5 dealership.
+-- However, LIMIT 5 will cut off the rest regardless of whether there is a tie between 5th and 6th element.
+-- So in real world, you need to check the boundary condition carefully, 
+--    i.e., check the value below the limit to make sure there is no tie. 
+-- For this question, if we just aim at getting the dealership ID, the following SQL is good enough
+-- However, if we would like to have the dealership details, we need to select the information from
+--    the dealerships table, with a filter on the dealership IDs from the query below.
+SELECT s.dealership_id, COUNT(*)
+FROM sales s
+WHERE channel <> 'internet'
+GROUP BY s.dealership_id
+ORDER BY 2 DESC
+LIMIT 5;
+
+-- Question 5
+SELECT channel, AVG(sales_amount)
+FROM sales
+GROUP BY channel;
+
+SELECT product_id, AVG(sales_amount)
+FROM sales
+GROUP BY product_id;
+
+SELECT channel,  product_id, AVG(sales_amount)
+FROM sales
+GROUP BY channel, product_id;
+
