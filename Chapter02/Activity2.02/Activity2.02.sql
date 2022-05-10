@@ -16,7 +16,7 @@ ADD COLUMN event text;
 UPDATE customers_nyc SET
 event = 'thank-you party';
 
-SELECT * 
+SELECT customer_id, title, first_name, last_name, event
 FROM customers_nyc;
 
 DROP TABLE customers_nyc;
