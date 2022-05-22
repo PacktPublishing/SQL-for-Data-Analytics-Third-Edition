@@ -9,17 +9,41 @@ SELECT
       ELSE NULL 
     END
   ) OVER (ORDER BY date_added::DATE) 
-    as total_customers_filled_street
+    as non_null_street_address,
+  COUNT(*) OVER (ORDER BY date_added::DATE) 
+    as total_street_address
 FROM 
   customers
 ORDER BY 
   date_added;
 
+
 -- Step 3
-SELECT 
+WITH 
+  daily_rolling_count as (
+    SELECT 
+      customer_id, 
+      street_address, 
+      date_added::DATE,
+      COUNT(
+        CASE 
+          WHEN street_address IS NOT NULL THEN customer_id 
+          ELSE NULL 
+        END
+      ) OVER (ORDER BY date_added::DATE) 
+        as non_null_street_address,
+      COUNT(*) OVER (ORDER BY date_added::DATE) 
+        as total_street_address
+    FROM 
+      customers
+  )
+SELECT DISTINCT
   date_added,
-  1 - 1.0 * COUNT(street_address) / COUNT(*) AS pct_null_address 
+  non_null_street_address,
+  total_street_address,
+  1 - 1.0 * non_null_street_address/total_street_address
+    AS null_address_percentage 
 FROM
-  customers
-GROUP BY 1
-ORDER BY 1;
+  daily_rolling_count
+ORDER BY 
+  date_added;
