@@ -49,7 +49,7 @@ CREATE FUNCTION update_stock()
 RETURNS TRIGGER AS $stock_trigger$
 DECLARE stock_qty integer;
 BEGIN
-  stock_qty := get_stock(NEW.product_code) - NEW..qty;
+  stock_qty := get_stock(NEW.product_code) - NEW.qty;
   UPDATE 
     new_products 
   SET 
