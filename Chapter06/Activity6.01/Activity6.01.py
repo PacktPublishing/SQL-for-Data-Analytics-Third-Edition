@@ -115,7 +115,6 @@ data.plot.hist(y='public_transportation_pct')
 
 %time data.to_sql('public_transportation_by_zip', engine, if_exists='replace')
 
-# Step 12
 data = pd.read_sql_query(""" 
     SELECT
         10 * ROUND(public_transportation_pct/10) AS public_transport,
